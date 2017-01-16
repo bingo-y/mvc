@@ -19,13 +19,11 @@ import java.io.Writer;
 public class UserController {
 
     @Autowired
-    private UserDao userDao;
-//    private UserService userService;
+    private UserService userService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String user(@PathVariable int id) {
-//        User user = userService.selectUser(id);
-        User user = userDao.selectUser(id);
+        User user = userService.selectUser(id);
         return String.format("username: %s, password: %s", user.getName(), user.getPassword());
     }
 }
