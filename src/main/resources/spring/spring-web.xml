@@ -22,14 +22,33 @@
     	1、自动注册DefaultAnnotationHandlerMapping,AnnotationMethodHandlerAdapter
     	2、提供一系列:数据绑定,数字和日期的format,@NumberFormat,@DataTimeFormat,xml,json默认读写支持
     -->
-    <mvc:annotation-driven/>
+    <!--<mvc:annotation-driven/>-->
+
+    <!--HandlerMapping-->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+        <!--拦截器-->
+        <property name="interceptors">
+            <list>
+            </list>
+        </property>
+    </bean>
+    <!-- adapter -->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <!-- 参数解析器 -->
+        <property name="customArgumentResolvers">
+            <list>
+                <bean class="com.bingo.controller.support.handler.TokenHandler"/>
+            </list>
+        </property>
+    </bean>
+    <!--Message Exception-->
+    <bean class="com.bingo.controller.support.msg.MessageExceptionHandler" />
 
     <!--静态资源默认servlet配置
     	1、加入对静态资源的处理:js,css,gif,png
     	2、允许使用"/"做整体映射
     -->
     <mvc:default-servlet-handler/>
-
     <!--配置JSP　显示ViewResolver-->
     <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
         <!--<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>-->
