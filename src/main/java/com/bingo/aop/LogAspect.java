@@ -1,8 +1,7 @@
 package com.bingo.aop;
 
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -16,11 +15,44 @@ import org.springframework.stereotype.Component;
 public class LogAspect {
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-    @Pointcut("execution(* com.bingo.controller.*.*(..))")
+    @Pointcut("execution(* com.bingo.controller.*.user(..))")
     private void aopMethod(){};
 
+    @Pointcut("execution(* com.bingo.controller.*.list(..))")
+    private void listMethod(){};
+
     @Before("aopMethod()")
-    public void logPrintf() {
-        LOG.info(LogAspect.class.getName(), "aspect执行");
+    public void logBefore() {
+        LOG.info("before aspect执行");
     }
+
+    @After("aopMethod()")
+    public void logAfter() {
+        LOG.info("after aspect执行");
+    }
+
+    @AfterReturning("aopMethod()")
+    public void logAfterReturning() {
+        LOG.info("after return aspect执行");
+    }
+
+    @Around("aopMethod()")
+    public Object logAround(ProceedingJoinPoint pjp) {
+        Object returnValue = null;
+        try {
+            LOG.info("around before aspect执行");
+            returnValue = pjp.proceed();
+            LOG.info("around after aspect执行");
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        LOG.info("around return value : " + returnValue);
+        return returnValue;
+    }
+
+    @AfterThrowing(pointcut = "listMethod()", throwing = "exc")
+    public void logAfterThrowing(RuntimeException exc) {
+        LOG.info("runtime exception : " + exc.toString());
+    }
+
 }
